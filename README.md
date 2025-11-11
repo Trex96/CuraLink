@@ -1,36 +1,192 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CuraLink - Medical Research Platform
 
-## Getting Started
+A Next.js 14 platform connecting patients with researchers, clinical trials, and publications.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js 14+ with App Router
+- **Language**: TypeScript
+- **Database**: MongoDB with Mongoose
+- **Authentication**: NextAuth.js
+- **Real-time Communication**: Socket.io
+- **UI Components**: shadcn/ui
+- **Styling**: Tailwind CSS (indigo blue as primary color)
+- **Validation**: Zod
+
+## Project Structure
+
+```
+.
+├── app/                 # Next.js App Router
+├── components/          # UI components
+├── lib/                 # Utilities, database, auth
+├── models/              # MongoDB models
+├── types/               # TypeScript types
+├── hooks/               # Custom React hooks
+├── public/              # Static assets
+├── README.md
+├── next.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Folder Structure Details
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### app/ (Next.js App Router)
+- `api/` - API routes
+- `auth/` - Authentication pages
+- `dashboard/` - Dashboard pages for different user types
+- `forum/` - Forum pages
+- `patient/` - Patient-specific pages
+- `researcher/` - Researcher-specific pages
+- `search/` - Search functionality pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### components/ (UI Components)
+- `ui/` - shadcn/ui components
+- Custom components for the application
 
-## Learn More
+### lib/ (Utilities, Database, Auth)
+- `db/` - Database connection and utilities
+- `auth/` - Authentication configuration
+- `socket/` - Socket.io configuration
+- `utils/` - Utility functions and validation
 
-To learn more about Next.js, take a look at the following resources:
+### models/ (MongoDB Models)
+- `user/` - User model
+- `trial/` - Clinical trial model
+- `publication/` - Publication model
+- `forum/` - Forum models (categories, posts, comments)
+- `message/` - Messaging model
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### types/ (TypeScript Types)
+- Type definitions for all models and interfaces
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### hooks/ (Custom React Hooks)
+- Custom hooks for application functionality
 
-## Deploy on Vercel
+## Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd curalink
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Copy `.env.local.example` to `.env.local` and fill in the values:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Features
+
+### User Types
+- **Patient Dashboard**: View clinical trials, publications, and connect with researchers
+- **Researcher Dashboard**: Manage trials, publications, and patient connections
+
+### Real-time Messaging
+- Socket.io implementation for real-time communication between researchers
+
+### Forum
+- Disease category-based forum system
+- Posts and comments functionality
+
+### Search
+- Advanced search with matching percentage calculation (0-100%)
+- Location-based search capabilities
+
+### Location-based Features
+- Geospatial indexing for location-based queries
+- Distance calculation for matching algorithms
+
+## Dependencies
+
+### Core Dependencies
+- `next`: React framework
+- `react`/`react-dom`: React library
+- `typescript`: Type checking
+- `tailwindcss`: Utility-first CSS framework
+- `mongoose`: MongoDB object modeling
+- `next-auth`: Authentication solution
+- `socket.io`/`socket.io-client`: Real-time communication
+- `zod`: Validation library
+- `bcryptjs`: Password hashing
+- `jsonwebtoken`: JWT implementation
+
+### UI Dependencies
+- `shadcn/ui`: Component library
+- `lucide-react`: Icon library
+- `sonner`: Toast notifications
+
+### Development Dependencies
+- `@types/*`: TypeScript definitions
+- `eslint`: Code linting
+- `@tailwindcss/postcss`: Tailwind CSS plugin
+
+## shadcn/ui Components Used
+
+- `button`
+- `card`
+- `dialog`
+- `form`
+- `input`
+- `label`
+- `select`
+- `textarea`
+- `sonner`
+
+## Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```env
+# MongoDB Connection
+MONGODB_URI=mongodb://localhost:27017/curalink
+
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_here
+
+# JWT Secret
+JWT_SECRET=your_jwt_secret_here
+
+# Google OAuth (optional)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# GitHub OAuth (optional)
+GITHUB_ID=your_github_id
+GITHUB_SECRET=your_github_secret
+```
+
+## Development Scripts
+
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run start`: Start production server
+- `npm run lint`: Run ESLint
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a pull request
+
+## License
+
+This project is licensed under the MIT License.
