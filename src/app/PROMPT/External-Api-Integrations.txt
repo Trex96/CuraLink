@@ -1,0 +1,90 @@
+Prompt 7.1: PubMed API Integration Service
+Create PubMed API integration for publication import:
+
+REQUIREMENTS:
+- Search publications by author name or ORCID
+- Fetch publication details (title, abstract, authors, journal, date, PMID, DOI)
+- Parse XML responses from NCBI E-utilities
+- Handle rate limiting (max 3 requests/second)
+- Retry failed requests with exponential backoff
+- Cache results in MongoDB
+
+NCBI E-UTILITIES:
+- ESearch: Search for publications
+- EFetch: Fetch full details
+- ESummary: Get summaries
+
+Please provide:
+1. PubMed service (lib/services/pubmed.ts):
+   - searchByAuthor(name)
+   - searchByOrcid(orcid)
+   - fetchPublicationDetails(pmids[])
+   - parseXMLResponse()
+2. API route (app/api/publications/import-pubmed/route.ts)
+3. Rate limiter utility
+4. Retry logic with exponential backoff
+5. XML parser utility
+6. Cache layer (store in MongoDB)
+7. Error handling
+
+Include TypeScript types for PubMed responses.
+Prompt 7.2: ClinicalTrials.gov API Integration
+Create ClinicalTrials.gov API integration:
+
+REQUIREMENTS:
+- Search trials by disease, location, status
+- Fetch trial details (NCT number, title, description, status, locations, eligibility, contact)
+- Parse JSON responses
+- Filter by trial phase, study type
+- Handle pagination
+- Update trial status periodically (background job)
+
+API ENDPOINTS:
+- Search: https://clinicaltrials.gov/api/query/study_fields
+- Details: https://clinicaltrials.gov/api/query/full_studies
+
+Please provide:
+1. ClinicalTrials service (lib/services/clinicaltrials.ts):
+   - searchTrials(params)
+   - fetchTrialDetails(nctNumber)
+   - parseTrialData()
+   - extractEligibilityCriteria()
+   - extractLocations()
+2. API routes:
+   - POST /api/trials/search/route.ts
+   - GET /api/trials/[nctNumber]/route.ts
+   - POST /api/trials/import/route.ts
+3. Trial parser utility
+4. Background job for periodic updates (using cron or Vercel Cron)
+5. Cache strategy
+6. Error handling
+
+Include eligibility criteria parsing logic.
+Prompt 7.3: Location Services (Geocoding & Distance)
+Integrate location services (Google Maps or Mapbox):
+
+REQUIREMENTS:
+- Geocode addresses to coordinates
+- Reverse geocode coordinates to addresses
+- Calculate distances between locations
+- Place autocomplete for address input
+- Nearby search within radius
+
+API CHOICE: Google Maps Geocoding API
+
+Please provide:
+1. Location service (lib/services/location.ts):
+   - geocodeAddress(address)
+   - reverseGeocode(lat, lng)
+   - calculateDistance(point1, point2) (Haversine)
+   - getPlaceSuggestions(input)
+2. API routes:
+   - POST /api/geocode/route.ts
+   - POST /api/reverse-geocode/route.ts
+   - GET /api/places/autocomplete/route.ts
+3. Location utilities
+4. Distance calculator (Haversine formula)
+5. Radius filter function
+6. Error handling for API failures
+
+Include cost optimization (cache heavily).

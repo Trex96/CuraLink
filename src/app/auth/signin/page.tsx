@@ -1,56 +1,92 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 
-export default function SignIn() {
+function SignInContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('patient');
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const { status } = useSession();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams?.get('callbackUrl');
+
+  // Redirect if already signed in
+  useEffect(() => {
+    if (status === 'authenticated') {
+      const redirectAuthenticated = async () => {
+        const { getSession } = await import('next-auth/react');
+        const s = await getSession();
+        const role = (s?.user as { role?: string })?.role;
+        const roleTarget = role === 'patient' ? '/dashboard/patient' : role === 'researcher' ? '/dashboard/researcher' : '/';
+        router.push(callbackUrl || roleTarget);
+      };
+      // no floating promises
+      void redirectAuthenticated();
+    }
+  }, [status, router, callbackUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
     try {
-      const res = await fetch('/api/auth/callback/credentials', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          role,
-        }),
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (res.ok) {
+      if (result?.error) {
+        toast.error('Error', {
+          description: result.error,
+        });
+        setErrorMessage(result.error);
+      } else {
+        const { getSession } = await import('next-auth/react');
+        const s = await getSession();
+        const role = (s?.user as { role?: string })?.role;
+        const roleTarget = role === 'patient' ? '/dashboard/patient' : role === 'researcher' ? '/dashboard/researcher' : '/';
+        const target = callbackUrl || roleTarget;
         toast.success('Success', {
           description: 'Signed in successfully',
         });
-        router.push('/dashboard');
-      } else {
-        const data = await res.json();
-        toast.error('Error', {
-          description: data.message || 'Failed to sign in',
-        });
+        router.push(target);
       }
     } catch (error) {
+      console.error('Sign in error:', error);
       toast.error('Error', {
         description: 'An unexpected error occurred',
       });
+      setErrorMessage('An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
+
+  // Don't show the form if already authenticated
+  if (status === 'loading') {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  if (status === 'authenticated') {
+    return null; // Will redirect in useEffect
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -84,32 +120,44 @@ export default function SignIn() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <select
-                id="role"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                <option value="patient">Patient</option>
-                <option value="researcher">Researcher</option>
-              </select>
-            </div>
+            {errorMessage && (
+              <div className="text-sm text-red-600" role="alert">Error: {errorMessage}</div>
+            )}
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
             <div className="text-center text-sm">
-              Don't have an account?{' '}
-              <Button variant="link" className="p-0" onClick={() => router.push('/auth/signup')}>
-                Sign up
-              </Button>
+              <Link href="/auth/forgot-password" className="text-indigo-600 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+            <div className="text-center text-sm">
+              Don&apos;t have an account?{' '}
+              <Link href="/auth/signup/patient" className="text-indigo-600 hover:underline">
+                Sign up as Patient
+              </Link>{' '}
+              or{' '}
+              <Link href="/auth/signup/researcher" className="text-indigo-600 hover:underline">
+                Researcher
+              </Link>
             </div>
           </CardFooter>
         </form>
       </Card>
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   );
 }

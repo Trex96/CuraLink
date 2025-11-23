@@ -1,0 +1,26 @@
+clicalTrial Integrations Api
+
+clinalTrial.gov - https://clinicaltrials.gov/data-api/api
+
+do all the 
+
+Studies
+Related to clinical trial studies
+
+Stats
+Data statistics
+
+
+
+
+2. Publicalstion crud for the researcher 
+
+3. analysis recommendation based on the reshearch searching showing him 
+
+4.Enhance the profile views analysis and form actrivity
+5. messging and friends talking make it talking socal interactive to the patients and the researcher collabrators 
+
+6. notification fixing when ever approved from the forms or clincal trial or connect any activity to the user will display it as notifcation on the users
+7. modify the home page 
+
+8. CI/CD devops things docker kub etc...

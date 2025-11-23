@@ -1,15 +1,38 @@
-import NextAuth, { NextAuthOptions, User as NextAuthUser } from 'next-auth';
+import { NextAuthOptions, User as NextAuthUser, Session } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import connectDB from '@/lib/db/connect';
-import User, { UserRole } from '@/models/user/User';
+import User, { IUser } from '@/models/user/User';
+import { UserRole } from '@/types';
+import { JWT } from 'next-auth/jwt';
 
 // Extend the NextAuth User type to include our custom properties
 interface UserWithRole extends NextAuthUser {
   id: string;
   role: UserRole;
+  name: string;
+}
+
+export async function authorizeCredentials(credentials: Record<string, string> | undefined) {
+  if (!credentials?.email || !credentials?.password) {
+    throw new Error('Missing credentials');
+  }
+
+  await connectDB();
+
+  const user: IUser | null = await User.findOne({ email: credentials.email });
+
+  if (!user || !(await bcrypt.compare(credentials.password, user.password))) {
+    // Return null to align with NextAuth semantics instead of throwing
+    return null;
+  }
+
+  return {
+    id: (user._id as unknown as string),
+    name: user.firstName + ' ' + user.lastName,
+    email: user.email,
+    role: user.role,
+  };
 }
 
 export const authOptions: NextAuthOptions = {
@@ -19,45 +42,14 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
-        role: { label: 'Role', type: 'text' },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Missing credentials');
-        }
-
-        await connectDB();
-
-        const user = await User.findOne({ email: credentials.email });
-
-        if (!user || !(await bcrypt.compare(credentials.password, user.password))) {
-          throw new Error('Invalid credentials');
-        }
-
-        // Check if user has the correct role if specified
-        if (credentials.role && user.role !== credentials.role) {
-          throw new Error(`Invalid role. Expected ${credentials.role}, got ${user.role}`);
-        }
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        } as UserWithRole;
+      async authorize(credentials: Record<string, string> | undefined) {
+        return authorizeCredentials(credentials);
       },
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: NextAuthUser }) {
       if (user) {
         const u = user as UserWithRole;
         token.id = u.id;
@@ -65,21 +57,33 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
         (session.user as UserWithRole).id = token.id as string;
         (session.user as UserWithRole).role = token.role as UserRole;
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    }
   },
   pages: {
     signIn: '/auth/signin',
+    newUser: '/auth/signup/patient', // Redirect new users to patient signup by default
   },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export default NextAuth(authOptions);
+// Do not export a NextAuth handler here. The API route
+// `src/app/api/auth/[...nextauth]/route.ts` is responsible for creating
+// the handler using `NextAuth(authOptions)`. Exporting the handler here
+// causes NextAuth to initialize during tests when importing `authOptions`.

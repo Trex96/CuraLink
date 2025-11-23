@@ -1,0 +1,150 @@
+Prompt 4.1: Researcher Dashboard & Profile Management
+Create researcher dashboard and profile management:
+
+DASHBOARD FEATURES:
+- New publications in researcher's field (last 30 days)
+- Relevant clinical trials
+- Collaboration requests (pending and accepted)
+- Profile views statistics
+- Recent forum questions in their expertise area
+- Quick actions (edit profile, import publications, message collaborators)
+
+PROFILE MANAGEMENT:
+- Edit bio, institution, expertise
+- Upload profile picture
+- Toggle "open for collaboration"
+- Connect ORCID for publication import
+- Manage contact preferences
+
+Please provide:
+1. Researcher dashboard (app/dashboard/researcher/page.tsx)
+2. Dashboard sections:
+   - RecentPublications
+   - CollaborationRequests
+   - RelevantTrials
+   - ForumActivity
+   - ProfileStats
+3. Profile edit page (app/dashboard/researcher/profile/edit/page.tsx)
+4. Profile edit form with all fields
+5. Image upload component
+6. API routes:
+   - GET /api/dashboard/researcher
+   - GET /api/dashboard/researcher/publications
+   - PUT /api/researchers/profile
+   - POST /api/researchers/upload-photo
+7. Dashboard service for data aggregation
+
+Use shadcn/ui Form components with Zod validation.
+Prompt 4.2: Publication Management & Import
+Create publication management system with PubMed import:
+
+FEATURES:
+- Auto-import from PubMed using ORCID or name
+- Manual publication entry
+- View all publications (sortable, filterable)
+- Link publications to Google Scholar, PubMed
+- Edit/delete publications
+- Publication metrics (citations, views)
+- Batch import
+- Publication search within researcher's library
+
+PUBMED INTEGRATION:
+- Use NCBI E-utilities API
+- Search by author name or ORCID
+- Fetch publication details
+- Handle pagination for bulk imports
+
+Please provide:
+1. Publications management page (app/dashboard/researcher/publications/page.tsx)
+2. Publication components:
+   - PublicationsList (with search/filter)
+   - PublicationCard (editable)
+   - ImportDialog (PubMed import form)
+   - AddManuallyDialog
+3. API routes:
+   - GET /api/publications/mine
+   - POST /api/publications/import-pubmed
+   - POST /api/publications/add
+   - PUT /api/publications/[id]
+   - DELETE /api/publications/[id]
+4. PubMed service (lib/services/pubmed.ts):
+   - searchByAuthor()
+   - searchByOrcid()
+   - fetchDetails()
+   - parsePubMedXML()
+5. Publication form with validation
+
+Show import progress with loading indicators.
+Prompt 4.3: Collaboration System (Request & Accept)
+Create researcher collaboration system:
+
+FEATURES:
+- Send collaboration request to another researcher
+- Include context/message with request
+- View pending requests (sent and received)
+- Accept/decline requests
+- View active collaborations
+- Collaboration list with filters
+- Notification on new request
+
+FLOW:
+1. Researcher A finds Researcher B via search
+2. Clicks "Request Collaboration"
+3. Fills context form (research interest, proposal)
+4. Request sent, Researcher B gets notification
+5. Researcher B can accept/decline
+6. If accepted, messaging chat opens
+
+Please provide:
+1. Collaboration requests page (app/dashboard/researcher/collaborations/page.tsx)
+2. Collaboration components:
+   - CollaborationRequestCard
+   - RequestCollaborationDialog
+   - AcceptDeclineButtons
+   - CollaborationsList (tabs: pending/active/declined)
+3. API routes:
+   - GET /api/collaborations/requests
+   - POST /api/collaborations/send
+   - POST /api/collaborations/[id]/accept
+   - POST /api/collaborations/[id]/decline
+   - GET /api/collaborations/active
+4. Notification service (lib/services/notifications.ts)
+5. Real-time updates using WebSocket
+
+Show status badges (pending/accepted) clearly.
+Prompt 4.4: Clinical Trials Management for Researchers
+Create trial management for researchers:
+
+FEATURES:
+- Import trials from ClinicalTrials.gov
+- Link existing trials to profile
+- View trials (own and related)
+- Edit trial information (if PI)
+- Trial status updates
+- Search trials in database
+
+CLINICALTRIALS.GOV INTEGRATION:
+- Search trials by PI name
+- Search by institution
+- Fetch trial details
+- Update trial status periodically
+
+Please provide:
+1. Trials management page (app/dashboard/researcher/trials/page.tsx)
+2. Trial components:
+   - ResearcherTrialCard
+   - ImportTrialsDialog
+   - TrialDetailsEditor
+3. API routes:
+   - GET /api/trials/researcher/mine
+   - POST /api/trials/import
+   - POST /api/trials/link
+   - PUT /api/trials/[nctNumber]
+4. ClinicalTrials.gov service (lib/services/clinicaltrials.ts):
+   - searchByPI()
+   - searchByInstitution()
+   - fetchTrialDetails()
+   - parseTrialData()
+5. Trial import wizard
+
+Allow researchers to highlight their role in trials.

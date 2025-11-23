@@ -239,3 +239,54 @@ npm run dev
 npm run build
 npm run start
 ```
+
+## Auth Flow Updates
+
+- Sign-in page (`/auth/signin`) performs role-aware redirects:
+  - Patient → `/dashboard/patient`
+  - Researcher → `/dashboard/researcher`
+  - If `callbackUrl` is provided (e.g., from a protected route), it is respected.
+
+- Global server-side protection via `middleware.ts`:
+  - Protects `/dashboard/:path*`, `/messages/:path*`, `/forum/:path*`.
+  - Enforces role checks on `/dashboard/patient` and `/dashboard/researcher`.
+  - Unauthenticated users are redirected to `/auth/signin?callbackUrl=<original>`.
+
+- `AuthProvider` is now part of app providers so `useAuth()` exposes consistent `user`, `isAuthenticated`, `isPatient`, `isResearcher`.
+
+## Testing
+
+- Install test dependencies:
+  - `npm install --save-dev jest @testing-library/react @testing-library/jest-dom jest-environment-jsdom ts-jest @types/jest`
+- Run tests:
+  - `npm test`
+- Test coverage includes:
+  - NextAuth callbacks (JWT/session).
+  - Sign-in success and error flows.
+  - Middleware protection (configured matchers and role gating).
+## Authentication Workflow (Updated)
+
+- Sign-in page (`/auth/signin`) uses credentials via NextAuth. On success, it fetches the session and performs role-aware redirects:
+  - Patient → `/dashboard/patient`
+  - Researcher → `/dashboard/researcher`
+  - If `callbackUrl` is present (e.g., user was redirected from a protected page), it is respected.
+
+- Global protection via `src/middleware.ts`:
+  - Protects `/dashboard/:path*`, `/messages/:path*`, and `/forum/:path*`.
+  - Enforces role-based access on the dashboards.
+  - Unauthenticated users are redirected to `/auth/signin?callbackUrl=<original-url>`.
+
+- Client-side context:
+  - `AuthProvider` is now wired into `ClientProviders`, so `useAuth()` returns consistent session-backed `user` state and role helpers.
+
+- Sign-out:
+  - Use `signOut({ callbackUrl: '/' })` for reliable session cleanup and redirect.
+
+## Testing Auth
+
+- Requirements: `jest`, `@testing-library/react`, `@testing-library/jest-dom`, `ts-jest`.
+- Run tests: `npm test`.
+- Coverage includes:
+  - NextAuth callbacks: token and session enrichment.
+  - Sign-in page: success flow with role-aware redirect, failed sign-in inline error.
+  - Middleware config: protected matchers and role gating are asserted (for deeper logic tests, extract authorization into a pure helper).

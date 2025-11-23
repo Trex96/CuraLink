@@ -1,0 +1,105 @@
+Prompt 5.1: Socket.io Setup for Next.js
+Set up Socket.io for real-time features in Next.js:
+
+REQUIREMENTS:
+- Socket.io server in Next.js API route
+- Socket.io client setup
+- Authentication with JWT for socket connections
+- Rooms for one-to-one conversations
+- Event handlers for:
+  * send_message
+  * message_received
+  * typing
+  * user_online/offline
+  * message_read
+
+Please provide:
+1. Socket.io server setup (app/api/socket/route.ts for Next.js 14)
+   - OR pages/api/socket.ts if using Pages API for socket
+2. Socket.io client utility (lib/socket.ts)
+3. Socket context provider (components/providers/SocketProvider.tsx)
+4. useSocket hook
+5. Authentication middleware for socket connections
+6. Connection manager
+7. Error handling and reconnection logic
+
+Include TypeScript types for socket events.
+Prompt 5.2: Real-Time Messaging Interface
+Create real-time messaging system (only between researchers after collaboration accepted):
+
+FEATURES:
+- One-to-one chat interface
+- Real-time message delivery
+- Typing indicators
+- Read receipts
+- Message history (load more on scroll)
+- Online/offline status
+- File attachments (optional)
+- Message timestamps
+- Unread message counter
+
+SECURITY:
+- Verify collaboration status before allowing messages
+- Only researchers can message
+- Encrypted in transit
+
+Please provide:
+1. Messages page (app/messages/page.tsx)
+2. Message components:
+   - ConversationList (sidebar with contacts)
+   - ChatWindow (main chat area)
+   - MessageBubble (individual message)
+   - MessageInput (with send button)
+   - TypingIndicator
+   - OnlineStatus
+3. API routes:
+   - GET /api/messages/conversations
+   - GET /api/messages/[collaborationId]
+   - POST /api/messages/send
+   - PUT /api/messages/[id]/read
+4. Message service (lib/services/messages.ts)
+5. Socket event handlers for real-time updates
+6. Infinite scroll for message history
+7. Notification badge for unread messages
+
+Style like modern chat apps (WhatsApp, Slack).
+Prompt 5.3: Real-Time Notifications System
+Create comprehensive real-time notification system:
+
+NOTIFICATION TYPES:
+- Collaboration request received
+- Collaboration accepted/declined
+- New message received
+- New reply to forum post
+- Expert request received
+- New publication in your field
+- New trial near your location
+
+FEATURES:
+- Notification bell icon with unread count
+- Dropdown panel with recent notifications
+- Mark as read/unread
+- Clear all notifications
+- Navigate to relevant page on click
+- Real-time updates via WebSocket
+- Persistent notifications in database
+
+Please provide:
+1. Notification components:
+   - NotificationBell (header icon with badge)
+   - NotificationDropdown (panel)
+   - NotificationItem (single notification)
+2. API routes:
+   - GET /api/notifications
+   - PUT /api/notifications/[id]/read
+   - PUT /api/notifications/read-all
+   - DELETE /api/notifications/[id]
+3. Notification service:
+   - createNotification()
+   - sendRealTimeNotification()
+   - markAsRead()
+4. Socket events for real-time delivery
+5. useNotifications hook
+6. Notification sounds (optional)
+
+Use shadcn/ui Dropdown Menu and Badge components.

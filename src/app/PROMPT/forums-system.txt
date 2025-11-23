@@ -1,0 +1,142 @@
+Prompt 6.1: Forum Structure & Categories
+
+
+Create forum system with disease-based categories:
+
+FEATURES:
+- Disease categories (auto-generated from conditions)
+- Browse posts by category
+- Search within forum
+- Filter posts (unanswered, trending, recent)
+- Sort by date, upvotes, replies
+- Tag posts by treatment type, symptoms, etc.
+- Patient questions highlighted
+- Researcher-verified answers (badge)
+
+PERMISSIONS:
+- Patients: post questions, comment, upvote
+- Researchers: post, comment, upvote, verify answers
+- Researcher-only threads (professional discussions)
+
+Please provide:
+1. Forum home page (app/forum/page.tsx)
+2. Category page (app/forum/[category]/page.tsx)
+3. Forum components:
+   - ForumCategoryCard
+   - ForumPostCard (compact view)
+   - ForumFilters (sidebar)
+   - CategoryList
+4. API routes:
+   - GET /api/forum/categories
+   - GET /api/forum/posts
+   - GET /api/forum/[category]/posts
+5. Forum service (lib/services/forum.ts)
+6. Category management
+
+Show post statistics (replies, views, upvotes).
+
+
+Prompt 6.2: Forum Post Creation & Viewing
+Create forum post creation and detail view:
+
+FEATURES:
+- Create new post with:
+  * Title
+  * Content (rich text editor)
+  * Category (disease)
+  * Tags
+  * Attachments (optional)
+- Post detail view with:
+  * Original post
+  * Comments/replies (threaded)
+  * Upvote/downvote
+  * Share button
+  * Follow post (get notifications)
+- Edit/delete own posts
+- Researcher verification badge on answers
+
+Please provide:
+1. Create post page (app/forum/create/page.tsx)
+2. Post detail page (app/forum/posts/[id]/page.tsx)
+3. Post components:
+   - PostForm (with rich text editor)
+   - PostDetail (full view)
+   - PostActions (upvote, share, follow)
+   - VerifyAnswerButton (researchers only)
+4. Rich text editor (using Tiptap or similar)
+5. API routes:
+   - POST /api/forum/posts
+   - GET /api/forum/posts/[id]
+   - PUT /api/forum/posts/[id]
+   - DELETE /api/forum/posts/[id]
+   - POST /api/forum/posts/[id]/upvote
+   - POST /api/forum/posts/[id]/verify
+6. Upload handling for attachments
+
+Use shadcn/ui Form and Textarea components.
+
+
+Prompt 6.3: Forum Comments & Interactions
+Create forum commenting and interaction system:
+
+FEATURES:
+- Add comments to posts
+- Upvote/downvote comments
+- Edit/delete own comments
+- Researcher badge on comments
+- Mention users (@username)
+- Sort comments (newest, oldest, most upvoted)
+- Load more comments (pagination)
+
+Please provide:
+1. Comment components:
+   - CommentList (with threading)
+   - CommentItem (single comment)
+   - CommentForm (reply form)
+   - CommentActions (upvote, reply)
+2. API routes:
+   - GET /api/forum/posts/[id]/comments
+   - POST /api/forum/posts/[id]/comments
+   - PUT /api/forum/comments/[id]
+   - DELETE /api/forum/comments/[id]
+   - POST /api/forum/comments/[id]/upvote
+3. Comment service
+4. Mention functionality (@username autocomplete)
+5. Nested comment rendering logic
+
+Style with proper indentation for threaded discussions.
+
+
+Prompt 6.4: Researcher Forum Tools
+Create researcher-specific forum features:
+
+FEATURES:
+- Filter forum by expertise area
+- View unanswered questions in their field
+- Professional discussion threads (researchers only)
+- Answer verification system
+- Reputation points for helpful answers
+- Quick response templates
+- Notification for questions in their field
+
+RESEARCHER DASHBOARD INTEGRATION:
+- Show recent questions needing answers
+- Show questions you've answered
+- Track reputation score
+
+Please provide:
+1. Researcher forum dashboard (app/forum/researcher/page.tsx)
+2. Professional threads section
+3. Components:
+   - UnansweredQuestionsWidget
+   - MyAnswersWidget
+   - ReputationBadge
+   - QuickResponseTemplates
+4. API routes:
+   - GET /api/forum/researcher/unanswered
+   - GET /api/forum/researcher/my-answers
+   - GET /api/forum/researcher/threads
+5. Filtering by expertise
+6. Reputation calculation system
+
+Highlight questions that match researcher's expertise.

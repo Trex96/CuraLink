@@ -47,6 +47,7 @@ export default function SignUp() {
         });
       }
     } catch (error) {
+      void error; // Unused error variable
       toast.error('Error', {
         description: 'An unexpected error occurred',
       });

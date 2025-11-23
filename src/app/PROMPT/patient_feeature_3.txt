@@ -1,0 +1,133 @@
+Prompt 3.1: Patient Dashboard & Home Page
+Create patient dashboard and home page:
+
+FEATURES:
+- Top researchers in patient's condition area (based on profile)
+- Nearby clinical trials (within 100 miles)
+- Recommended publications (patient-friendly)
+- Recent forum activity
+- Quick search bar
+- Expert request status
+
+LAYOUT:
+- Hero section with personalized greeting
+- 4-column grid on desktop, 1-column on mobile
+- Cards for each section with skeleton loaders
+- "View All" links to dedicated pages
+
+Please provide:
+1. Patient dashboard page (app/dashboard/patient/page.tsx)
+2. Dashboard sections:
+   - TopResearchersSection
+   - NearbyTrialsSection
+   - RecommendedReadingsSection
+   - RecentForumActivity
+3. API routes for dashboard data:
+   - GET /api/dashboard/patient/researchers
+   - GET /api/dashboard/patient/trials
+   - GET /api/dashboard/patient/publications
+4. Dashboard service (lib/services/patient-dashboard.ts)
+5. Loading states with Skeleton components
+6. Empty states for each section
+
+Style with shadcn/ui cards and indigo theme.
+Prompt 3.2: Researcher Profile View (Patient Perspective)
+Create researcher profile page for patients to view:
+
+FEATURES:
+- Researcher info (name, institution, bio, expertise)
+- Profile picture
+- Publications list with links to PubMed
+- Active clinical trials
+- "Request Expert" button (sends collaboration request)
+- "Save to Favorites" button
+- Contact information (if public)
+- Back to search results
+
+Please provide:
+1. Researcher profile page (app/researchers/[id]/page.tsx)
+2. Profile components:
+   - ResearcherHeader (photo, name, institution)
+   - ResearcherBio
+   - ExpertiseSection (chips/badges)
+   - PublicationsList (with pagination)
+   - TrialsList (with eligibility indicators)
+   - RequestExpertButton (opens dialog)
+3. Request expert dialog component
+4. API routes:
+   - GET /api/researchers/[id]
+   - POST /api/researchers/[id]/request
+   - POST /api/favorites/add
+5. Favorite functionality
+6. Loading states
+
+Use shadcn/ui Dialog for request form.
+Prompt 3.3: Favorites System with Summary Generator
+Create favorites/bookmarking system with summary generation:
+
+FEATURES:
+- Save researchers, publications, trials
+- View all favorites in organized page
+- Checkboxes to select items for summary
+- Generate downloadable summary (PDF format)
+- Summary includes:
+  * Researcher details (name, institution, contact)
+  * Publication details (title, abstract, link)
+  * Trial details (title, NCT number, location, contact)
+- Email summary option
+- Print-friendly format for doctor appointments
+
+Please provide:
+1. Favorites page (app/favorites/page.tsx)
+2. Favorites components:
+   - FavoritesGrid (with tabs for researchers/publications/trials)
+   - FavoriteCard (with checkbox)
+   - SummaryGenerator (selection panel)
+3. Summary generation dialog
+4. API routes:
+   - GET /api/favorites
+   - POST /api/favorites/add
+   - DELETE /api/favorites/remove
+   - POST /api/favorites/generate-summary
+5. PDF generation utility (using jsPDF or react-pdf)
+6. Summary service (lib/services/summary.ts)
+7. Email service for sending summary
+
+Style summary document professionally for medical professionals.
+Prompt 3.4: Clinical Trials Search & Detail View
+Create clinical trials exploration features:
+
+FEATURES:
+- Browse trials by disease/condition
+- Filter by:
+  * Status (recruiting, active, completed)
+  * Phase (1, 2, 3, 4)
+  * Location (nearby)
+  * Eligibility
+- Trial detail page with:
+  * Full description
+  * Eligibility criteria (highlight matching criteria)
+  * Locations with distances
+  * Contact information
+  * "Save to Favorites" button
+  * "Share" button
+- Eligibility checker (basic questionnaire)
+
+Please provide:
+1. Trials browse page (app/trials/page.tsx)
+2. Trial detail page (app/trials/[nctNumber]/page.tsx)
+3. Trial components:
+   - TrialCard (compact view)
+   - TrialFilters (sidebar)
+   - TrialDetails (full view)
+   - EligibilitySection (criteria with checkmarks)
+   - LocationsList (sorted by distance)
+4. Eligibility checker dialog
+5. API routes:
+   - GET /api/trials
+   - GET /api/trials/[nctNumber]
+   - POST /api/trials/check-eligibility
+6. Trial filtering logic
+7. Share functionality
+
+Show eligibility match as percentage where possible.

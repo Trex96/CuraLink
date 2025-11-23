@@ -1,0 +1,74 @@
+Prompt 2.1: Advanced Search with Matching Algorithm
+Build an intelligent search system with matching percentage:
+
+REQUIREMENTS:
+- Full-text search across researchers, publications, trials
+- Calculate match score (0-100%) based on:
+  * Keyword relevance (40%)
+  * Disease/condition match (25%)
+  * Geographic proximity (20%)
+  * Publication relevance (10%)
+  * Active trials (5%)
+
+SEARCH BEHAVIORS:
+- Patient search "glioblastoma diet" → nutrition researchers, dietary trials
+- Researcher search "glioblastoma immunotherapy" → other researchers, trials, publications
+
+FEATURES:
+- Autocomplete suggestions
+- Filter by location radius
+- Filter by disease/condition
+- Sort by relevance or distance
+- Paginated results
+
+Please provide:
+1. Search API routes:
+   - POST /api/search/researchers
+   - POST /api/search/trials
+   - POST /api/search/publications
+   - GET /api/search/suggestions
+2. Search service with matching algorithm (lib/services/search.ts)
+3. Search page component (app/search/page.tsx)
+4. Search results components:
+   - ResearcherCard (with % match badge)
+   - TrialCard (with % match badge)
+   - PublicationCard
+5. Search filters component (sidebar)
+6. Location-based sorting utility
+7. MongoDB text indexes setup
+8. TypeScript types for search
+
+Use shadcn/ui components and show match percentage prominently.
+
+-----------------
+
+Prompt 2.2: Location Services Implementation
+Implement location-based features:
+
+REQUIREMENTS:
+- Get user's current location (browser geolocation)
+- Geocoding: address → coordinates
+- Calculate distance between user and researchers/trials
+- Sort results by proximity
+- Filter by radius (10, 25, 50, 100 miles)
+- Display distance on result cards
+
+INTEGRATION:
+- Use Google Maps Geocoding API or Mapbox API
+
+Please provide:
+1. Location utility functions (lib/utils/location.ts):
+   - getCurrentLocation()
+   - geocodeAddress()
+   - calculateDistance() (Haversine formula)
+   - sortByDistance()
+2. Location API routes:
+   - POST /api/geocode
+   - GET /api/location/nearest
+3. Location picker component with autocomplete
+4. Distance display component
+5. Map view component (optional, using react-leaflet)
+6. Location permission handling
+7. Location context provider
+
+Include error handling for denied permissions.

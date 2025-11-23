@@ -1,78 +1,141 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import * as mongoose from 'mongoose';
+import type { Document, Model } from 'mongoose';
+
+export interface IResearcherRole {
+  researcherId: mongoose.Types.ObjectId;
+  role: 'PI' | 'Co-Investigator' | 'Site Coordinator' | 'Study Coordinator' | 'Other';
+  addedAt: Date;
+}
 
 export interface ITrial extends Document {
+  nctNumber: string;
   title: string;
-  description: string;
-  researcher: mongoose.Types.ObjectId;
-  diseaseCategory: string;
-  location?: {
-    type: { type: string };
-    coordinates: number[];
-  };
-  startDate: Date;
-  endDate: Date;
-  enrollmentCount: number;
-  maxParticipants: number;
+  summary: string;
+  detailedDescription?: string;
+  status: string;
+  phase: string;
+  studyType?: string;
+  enrollment?: number;
+  startDate?: string;
+  endDate?: string;
+  locations: Array<{
+    coordinates: [number, number];
+    address?: string;
+  }>;
   eligibilityCriteria: string[];
-  status: 'recruiting' | 'active' | 'completed' | 'suspended';
+  contactInfo: string;
+  conditions: string[];
+  interventions: string[];
+  sponsors?: string[];
+  linkedResearchers: mongoose.Types.ObjectId[];
+  researcherRoles: IResearcherRole[];
+  importedFrom?: 'clinicaltrials.gov' | 'manual';
+  lastUpdated: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const TrialSchema: Schema = new Schema(
+const TrialSchema = new mongoose.Schema(
   {
+    nctNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     title: {
       type: String,
       required: true,
+      trim: true,
     },
-    description: {
+    summary: {
       type: String,
       required: true,
     },
-    researcher: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
+    detailedDescription: {
+      type: String,
     },
-    diseaseCategory: {
+    status: {
       type: String,
       required: true,
+      trim: true,
     },
-    location: {
+    phase: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    studyType: {
+      type: String,
+    },
+    enrollment: {
+      type: Number,
+    },
+    startDate: {
+      type: String,
+    },
+    endDate: {
+      type: String,
+    },
+    locations: [{
       type: {
         type: String,
+        enum: ['Point'],
         default: 'Point',
       },
       coordinates: {
         type: [Number],
-        index: '2dsphere',
+        required: true,
       },
-    },
-    startDate: {
-      type: Date,
-      required: true,
-    },
-    endDate: {
-      type: Date,
-      required: true,
-    },
-    enrollmentCount: {
-      type: Number,
-      default: 0,
-    },
-    maxParticipants: {
-      type: Number,
-      required: true,
-    },
-    eligibilityCriteria: [
-      {
+      address: {
         type: String,
       },
-    ],
-    status: {
+    }],
+    eligibilityCriteria: [{
       type: String,
-      enum: ['recruiting', 'active', 'completed', 'suspended'],
-      default: 'recruiting',
+    }],
+    contactInfo: {
+      type: String,
+      required: true,
+    },
+    conditions: [{
+      type: String,
+      required: true,
+    }],
+    interventions: [{
+      type: String,
+    }],
+    sponsors: [{
+      type: String,
+    }],
+    linkedResearchers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }],
+    researcherRoles: [{
+      researcherId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      role: {
+        type: String,
+        enum: ['PI', 'Co-Investigator', 'Site Coordinator', 'Study Coordinator', 'Other'],
+        required: true,
+      },
+      addedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    }],
+    importedFrom: {
+      type: String,
+      enum: ['clinicaltrials.gov', 'manual'],
+      default: 'manual',
+    },
+    lastUpdated: {
+      type: Date,
+      required: true,
     },
   },
   {
@@ -80,7 +143,20 @@ const TrialSchema: Schema = new Schema(
   }
 );
 
-// Create geospatial index for location-based queries
-TrialSchema.index({ location: '2dsphere' });
+// Indexes for performance
+TrialSchema.index({ status: 1 });
+TrialSchema.index({ phase: 1 });
+TrialSchema.index({ conditions: 1 });
+TrialSchema.index({ conditions: 1 });
+TrialSchema.index({ title: 'text', summary: 'text' });
+// TrialSchema.index({ locations: '2dsphere' });
 
-export default mongoose.models.Trial || mongoose.model<ITrial>('Trial', TrialSchema);
+// Prevent Mongoose OverwriteModelError in development
+if (process.env.NODE_ENV !== 'production' && mongoose.models.Trial) {
+  delete mongoose.models.Trial;
+}
+
+const TrialModel: Model<ITrial> =
+  mongoose.models.Trial || mongoose.model<ITrial>('Trial', TrialSchema);
+
+export default TrialModel;

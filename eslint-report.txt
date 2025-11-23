@@ -1,0 +1,7 @@
+[0m[0m
+[0m[4m/Users/bikashmarandi/iCloud Drive (Archive)/Documents/Development/Projects/curalink/src/lib/utils/utils.ts[24m[0m
+[0m  [2m52:46[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m  [2m52:56[22m  [31merror[39m  Unexpected any. Specify a different type  [2m@typescript-eslint/no-explicit-any[22m[0m
+[0m[0m
+[0m[31m[1m✖ 2 problems (2 errors, 0 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m
